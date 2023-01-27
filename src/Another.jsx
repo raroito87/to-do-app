@@ -4,7 +4,7 @@ export default function Another(props){
     return (
         <div>
 
-            Another Component, { props.name }
+ Another Component, { props.name }
         </div>
     )
-}
+    }
