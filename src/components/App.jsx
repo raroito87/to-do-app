@@ -3,10 +3,13 @@ import '../App.css';
 import NoTodos from './NoTodos';
 import TodoForm from './TodoForm';
 import TodoList from './TodoList';
-import { useState } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { toHaveFocus } from '@testing-library/jest-dom/dist/matchers';
 
 function App() {
+  const [name, setName] = useState('');
+  const nameInputEl = useRef(null);
+
   const [todos, setTodos] = useState([
     {
       id: 1,
@@ -102,9 +105,13 @@ function App() {
     setTodos(updatedTodos);
   }
 
-  function remaining() {
+  function remainingCalculation() {
+    // console.log('calculatin remaining todos. This is slow')
+    // for (let index = 0; index < 2000000000; index++) {}
     return todos.filter(todo => !todo.isComplete).length;
   }
+
+  const remaining = useMemo(remainingCalculation, [todos])
 
   function clearCompleted() {
     setTodos([...todos].filter(todo => !todo.isComplete));
@@ -124,15 +131,42 @@ function App() {
     if (filter == 'all') {
       return todos;
     } else if (filter == 'active') {
-      return todos.filter(todo => !todo.isComplete)
-    }else if (filter == 'completed') {
-      return todos.filter(todo =>todo.isComplete)
+      return todos.filter(todo => !todo.isComplete);
+    } else if (filter == 'completed') {
+      return todos.filter(todo => todo.isComplete);
     }
   }
+
+  useEffect(() => {
+    // console.log('use effect running')
+    nameInputEl.current.focus()
+  
+    return function cleanUp() {
+      console.log('cleanin up')
+    }
+  }, []); // when the compnent mounts
+
+
 
   return (
     <div className="todo-app-container">
       <div className="todo-app">
+        <div className="name-container">
+          <h2>What is your name?</h2>
+          <form action="#">
+            <input
+              type="text"
+              ref={nameInputEl}
+              className="todo-input"
+              placeholder="what is your name?"
+              value={name}
+              onChange={event => setName(event.target.value)}
+            >
+            </input>
+          </form>
+          {name && <p className="name-label">Hello, name</p>}
+
+        </div>
         <TodoForm addTodo={addTodo} />
 
         {todos.length > 0 ? (
