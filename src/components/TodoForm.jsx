@@ -1,32 +1,40 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useContext } from 'react';
+import { TodosContext } from '../context/TodosContext';
 
-TodoForm.proptype = {
-    addTodo: PropTypes.func.isRequired,  
-};
 
-function TodoForm(props) {
+function TodoForm() {
+  const { todos, setTodos, idForTodo, setIdForTodo } = useContext(TodosContext);
   const [todoInput, setTodoInput] = useState('');
 
   function handleInput(event) {
     setTodoInput(event.target.value);
   }
 
-  function handleSubmit(event) {
+  function addTodo(event) {
     event.preventDefault();
 
-    //handle white space case. do not add a new todo.
+    // handle white space case. do not add a new todo.
     if (todoInput.trim().length == 0) {
       return;
     }
 
-    props.addTodo(todoInput)
+    setTodos([
+      ...todos,
+      {
+        id: idForTodo,
+        title: todoInput,
+        isComplete: false,
+      },
+    ]);
+
+    //setIdForTodo(idForTodo + 1) // we want a callback
+   setIdForTodo(prevIdforTodo => prevIdforTodo + 1);
 
     setTodoInput('');
   }
 
   return (
-    <form action="#" onSubmit={handleSubmit}>
+    <form action="#" onSubmit={addTodo}>
       <input
         type="text"
         value={todoInput}
