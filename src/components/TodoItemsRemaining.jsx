@@ -4,7 +4,7 @@ import { TodosContext } from '../context/TodosContext';
 
 
 function TodoItemsRemaining() {
-  const {todos, setTodos, idForTodo, setIdForTodo} = useContext(TodosContext)
+  const {todos} = useContext(TodosContext)
 
   
   function remainingCalculation() {

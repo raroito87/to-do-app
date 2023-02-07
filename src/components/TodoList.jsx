@@ -5,20 +5,22 @@ import TodoCompleteAllTodos from './TodoCompleteAllTodos';
 import TodoFilters from './TodoFilters';
 import useToggle from '../hooks/useToggle';
 import { TodosContext } from '../context/TodosContext';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
 
 function TodoList() {
-  const {todos, setTodos, todosFiltered} = useContext(TodosContext)
+  const { todos, setTodos, todosFiltered } = useContext(TodosContext);
   const [isFeaturesOneVisible, setFeaturesOneVisible] = useToggle();
   const [isFeaturesTwoVisible, setFeaturesTwoVisible] = useToggle(false);
 
   function deleteTodo(id) {
     console.log('deleting todo id ', id);
-    setTodos([...todos].filter(todo => todo.id != id));
+    setTodos([...todos].filter(todo => todo.id !== id));
   }
 
   function completeTodo(id) {
     const updatedTodos = todos.map(todo => {
-      if (todo.id == id) {
+      if (todo.id === id) {
         todo.isComplete = !todo.isComplete;
       }
 
@@ -30,7 +32,7 @@ function TodoList() {
 
   function markAsEditing(id) {
     const updatedTodos = todos.map(todo => {
-      if (todo.id == id) {
+      if (todo.id === id) {
         todo.isEditing = true;
       }
 
@@ -42,8 +44,8 @@ function TodoList() {
 
   function updateTodo(event, id) {
     const updatedTodos = todos.map(todo => {
-      if (todo.id == id) {
-        if (event.target.value.trim().length == 0) {
+      if (todo.id === id) {
+        if (event.target.value.trim().length === 0) {
           todo.isEditing = false;
           return todo;
         }
@@ -59,7 +61,7 @@ function TodoList() {
 
   function cancelEdit(event, id) {
     const updatedTodos = todos.map(todo => {
-      if (todo.id == id) {
+      if (todo.id === id) {
         todo.isEditing = false;
       }
 
@@ -69,12 +71,15 @@ function TodoList() {
     setTodos(updatedTodos);
   }
 
-
   return (
     <>
-      <ul className="todo-list">
-        { todosFiltered().map((todo, index) => (
-          <li key={todo.id} className="todo-item-container">
+      <TransitionGroup component='ul' className='todo-list'>
+        {todosFiltered().map((todo, index) => (
+          <CSSTransition 
+          key={todo.id}
+          timeout={300}
+          classNames='slide-horizontal'>
+          <li className="todo-item-container">
             <div className="todo-item">
               <input
                 type="checkbox"
@@ -95,9 +100,9 @@ function TodoList() {
                   type="text"
                   onBlur={event => updateTodo(event, todo.id)}
                   onKeyDown={event => {
-                    if (event.key == 'Enter') {
+                    if (event.key === 'Enter') {
                       updateTodo(event, todo.id);
-                    } else if (event.key == 'Escape') {
+                    } else if (event.key === 'Escape') {
                       cancelEdit(event, todo.id);
                     }
                   }}
@@ -107,10 +112,7 @@ function TodoList() {
                 />
               )}
             </div>
-            <button
-              onClick={() => deleteTodo(todo.id)}
-              className="x-button"
-            >
+            <button onClick={() => deleteTodo(todo.id)} className="x-button">
               <svg
                 className="x-button-icon"
                 fill="none"
@@ -126,8 +128,9 @@ function TodoList() {
               </svg>
             </button>
           </li>
+          </CSSTransition>
         ))}
-      </ul>
+      </TransitionGroup>
 
       <div className="toggles-container">
         <button onClick={setFeaturesOneVisible} className="button">
@@ -138,21 +141,32 @@ function TodoList() {
         </button>
       </div>
 
-      {isFeaturesOneVisible && (
+      <CSSTransition
+        in={isFeaturesOneVisible}
+        timeout={300}
+        classNames="slide-vertical"
+        unmountOnExit
+      >
         <div className="check-all-container">
           <TodoCompleteAllTodos />
           <TodoItemsRemaining />
         </div>
-      )}
+      </CSSTransition>
 
-      {isFeaturesTwoVisible && (
+
+      <CSSTransition
+        in={isFeaturesTwoVisible}
+        timeout={300}
+        classNames="slide-vertical"
+        unmountOnExit
+      >
         <div className="other-buttons-container">
           <TodoFilters />
           <div>
             <TodoClearCompleted />
           </div>
         </div>
-      )}
+      </CSSTransition>
     </>
   );
 }

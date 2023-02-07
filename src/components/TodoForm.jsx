@@ -14,7 +14,7 @@ function TodoForm() {
     event.preventDefault();
 
     // handle white space case. do not add a new todo.
-    if (todoInput.trim().length == 0) {
+    if (todoInput.trim().length === 0) {
       return;
     }
 

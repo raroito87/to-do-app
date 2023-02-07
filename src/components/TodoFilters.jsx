@@ -13,7 +13,7 @@ function TodoFilters() {
           todosFiltered();
         }}
         className={`button filter-button ${
-          filter == 'all' ? 'filter-button-active' : ''
+          filter === 'all' ? 'filter-button-active' : ''
         } `}
       >
         All
@@ -24,7 +24,7 @@ function TodoFilters() {
           todosFiltered();
         }}
         className={`button filter-button ${
-          filter == 'active' ? 'filter-button-active' : ''
+          filter === 'active' ? 'filter-button-active' : ''
         } `}
       >
         Active
@@ -36,7 +36,7 @@ function TodoFilters() {
           todosFiltered();
         }}
         className={`button filter-button ${
-          filter == 'completed' ? 'filter-button-active' : ''
+          filter === 'completed' ? 'filter-button-active' : ''
         } `}
       >
         Completed
